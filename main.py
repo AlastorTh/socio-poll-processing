@@ -6,6 +6,8 @@ def create_connection(path):
     connection = None
     try:
         connection = sqlite3.connect(path)
+        connection.execute("PRAGMA foreign_keys = 1")
+        connection.commit()
         print("Connection to SQLite DB successful")
     except Error as e:
         print(f"The error '{e}' occurred")
@@ -39,7 +41,7 @@ connection = create_connection("D:\\sm_app.sqlite")
 # TODO: make a UI, asking for confirmation on every step
 create_participants_table = """
 CREATE TABLE IF NOT EXISTS participants (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_pers INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   age INTEGER,
   gender TEXT,
@@ -49,7 +51,7 @@ CREATE TABLE IF NOT EXISTS participants (
 """
 
 execute_query(connection, create_participants_table)
-
+connection.commit()
 # TODO: find a way to add variables to the insert queries
 fill_participants = """
 INSERT INTO
@@ -57,11 +59,72 @@ INSERT INTO
 VALUES
   ('James', 25, 'male', 'MAI', 'single');
 """
-
 execute_query(connection, fill_participants)
+
+print("Would you like to enter values by hand or from a file?")
+
+create_questions_table = """
+CREATE TABLE IF NOT EXISTS questions (
+    id_question INTEGER PRIMARY KEY AUTOINCREMENT,
+    question TEXT NOT NULL
+);
+"""
+execute_query(connection, create_questions_table)
+
+
+fill_questions = """
+INSERT INTO
+    questions (question)
+VALUES
+    ('To what extent do you agree with the statement A?');
+"""
+execute_query(connection, fill_questions)
+
+
+create_form_table = """
+CREATE TABLE IF NOT EXISTS forms (
+id_form INTEGER PRIMARY KEY AUTOINCREMENT,
+id_pers INTEGER NOT NULL,
+id_question INTEGER NOT NULL,
+answer INTEGER NOT NULL CHECK (answer BETWEEN 1 AND 5),
+FOREIGN KEY(id_pers) REFERENCES participants(id_pers),
+FOREIGN KEY(id_question) REFERENCES questions(id_question)
+);
+"""
+execute_query(connection, create_form_table)
+
+fill_form_table = """
+INSERT INTO
+    forms (answer)
+VALUES
+    (5);
+"""
+
+execute_query(connection, fill_form_table)
+
+
+# command = input()
+# if command == "by hand":
+#     pass  # TODO: input off keyboard
+# elif command == "file":
+#     pass  # TODO: input from file
+# else:
+#     pass  # TODO: error message
+
 
 select_participants = "SELECT * from participants"
 participants = execute_read_query(connection, select_participants)
 
 for participant in participants:
     print(participant)
+print("---------------")
+select_questions = "SELECT * from questions"
+questions = execute_read_query(connection, select_questions)
+for question in questions:
+    print(question)
+print("---------------")
+select_forms = "SELECT * from forms"
+forms = execute_read_query(connection, select_forms)
+
+for form in forms:
+    print(form)
