@@ -84,8 +84,8 @@ execute_query(connection, fill_questions)
 create_form_table = """
 CREATE TABLE IF NOT EXISTS forms (
 id_form INTEGER PRIMARY KEY AUTOINCREMENT,
-id_pers INTEGER NOT NULL,
-id_question INTEGER NOT NULL,
+id_pers INTEGER,
+id_question INTEGER,
 answer INTEGER NOT NULL CHECK (answer BETWEEN 1 AND 5),
 FOREIGN KEY(id_pers) REFERENCES participants(id_pers),
 FOREIGN KEY(id_question) REFERENCES questions(id_question)
@@ -93,9 +93,10 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 """
 execute_query(connection, create_form_table)
 
-fill_form_table = """
+
+fill_form_table = f"""
 INSERT INTO
-    forms (answer)
+    forms (id_pers, id_question,answer)
 VALUES
     (5);
 """
@@ -123,8 +124,3 @@ questions = execute_read_query(connection, select_questions)
 for question in questions:
     print(question)
 print("---------------")
-select_forms = "SELECT * from forms"
-forms = execute_read_query(connection, select_forms)
-
-for form in forms:
-    print(form)
