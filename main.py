@@ -2,6 +2,20 @@ import sqlite3
 from sqlite3 import Error
 
 
+def parse_input(filepath):
+    file = open(filepath, "r")
+    lines = file.readlines()
+    file.close()
+    for line in lines:
+        line = line.strip()
+        line = line.split(", ")
+        print(line)
+    return
+
+
+parse_input("input.txt")
+
+
 def create_connection(path):
     connection = None
     try:
@@ -71,7 +85,6 @@ CREATE TABLE IF NOT EXISTS questions (
 """
 execute_query(connection, create_questions_table)
 
-
 fill_questions = """
 INSERT INTO
     questions (question)
@@ -79,7 +92,6 @@ VALUES
     ('To what extent do you agree with the statement A?');
 """
 execute_query(connection, fill_questions)
-
 
 create_form_table = """
 CREATE TABLE IF NOT EXISTS forms (
@@ -93,7 +105,6 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 """
 execute_query(connection, create_form_table)
 
-
 fill_form_table = f"""
 INSERT INTO
     forms (id_pers, id_question,answer)
@@ -102,7 +113,6 @@ VALUES
 """
 
 execute_query(connection, fill_form_table)
-
 
 # command = input()
 # if command == "by hand":
