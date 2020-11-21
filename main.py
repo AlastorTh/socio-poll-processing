@@ -1,32 +1,6 @@
 import sqlite3
 from sqlite3 import Error
-
-
-def parse_input(filepath):
-    file = open(filepath, "r")
-    lines = file.readlines()
-    file.close()
-    for line in lines:
-        line = line.strip()
-        line = line.split(", ")
-        print(line)
-    return
-
-
-parse_input("input.txt")
-
-
-def create_connection(path):
-    connection = None
-    try:
-        connection = sqlite3.connect(path)
-        connection.execute("PRAGMA foreign_keys = 1")
-        connection.commit()
-        print("Connection to SQLite DB successful")
-    except Error as e:
-        print(f"The error '{e}' occurred")
-
-    return connection
+import json
 
 
 def execute_query(connection, query):
@@ -50,8 +24,39 @@ def execute_read_query(connection, query):
         print(f"The error '{e}' occurred")
 
 
+def create_connection(path):
+    connection = None
+    try:
+        connection = sqlite3.connect(path)
+        connection.execute("PRAGMA foreign_keys = 1")
+        connection.commit()
+        print("Connection to SQLite DB successful")
+    except Error as e:
+        print(f"The error '{e}' occurred")
+
+    return connection
+
+
 connection = create_connection("D:\\sm_app.sqlite")
 
+
+def parse_input(filepath):
+    file = open(filepath, "r")
+    lines = file.readlines()
+    file.close()
+    for line in lines:
+        line = line.strip()
+        line = line.split(", ")
+    return lines
+
+
+# lines = parse_input("input.txt")
+
+# print(lines)
+
+with open("input.txt", encoding="UTF-8") as json_file:
+    data = json.load(json_file)
+    print(data)
 # TODO: make a UI, asking for confirmation on every step
 create_participants_table = """
 CREATE TABLE IF NOT EXISTS participants (
