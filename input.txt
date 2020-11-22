@@ -7,7 +7,7 @@
         "university": "МАИ",
         "marital_status": "не женат",
         "answers": [
-        1,2,3,3,5
+        1,2,3
         ]
 
     },
@@ -18,7 +18,7 @@
         "university": "МАИ",
         "marital_status": "не женат",
         "answers": [
-        1,2,3,3,5
+        1,2,3
         ]
 
     }

@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS participants (
   id_pers INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   age INTEGER,
-  gender TEXT,
+  sex TEXT,
   education TEXT,
   marital_status TEXT
 );
@@ -72,13 +72,14 @@ CREATE TABLE IF NOT EXISTS participants (
 execute_query(connection, create_participants_table)
 connection.commit()
 # TODO: find a way to add variables to the insert queries
-fill_participants = """
-INSERT INTO
-  participants (name, age, gender, education, marital_status)
-VALUES
-  ('James', 25, 'male', 'MAI', 'single');
-"""
-execute_query(connection, fill_participants)
+
+for p in data['people']:
+    fill_participants = f"""
+        INSERT INTO
+        participants (name, age, sex, education, marital_status)
+        VALUES
+        ("{p['name']}", {p['age']}, "{p['sex']}", "{p['university']}", "{p['marital_status']}");"""
+    execute_query(connection, fill_participants)
 
 print("Would you like to enter values by hand or from a file?")
 
@@ -90,14 +91,32 @@ CREATE TABLE IF NOT EXISTS questions (
 """
 execute_query(connection, create_questions_table)
 
-fill_questions = """
+fill_question_1 = """
 INSERT INTO
     questions (question)
 VALUES
-    ('To what extent do you agree with the statement A?');
+    ('To what extent do you agree with the statement A?'
+    );
 """
-execute_query(connection, fill_questions)
-
+execute_query(connection, fill_question_1)
+fill_question_2 = """
+INSERT INTO
+    questions (question)
+VALUES
+    (
+    'To what extent do you agree with the statement B?'
+    );
+"""
+execute_query(connection, fill_question_2)
+fill_question_3 = """
+INSERT INTO
+    questions (question)
+VALUES
+    (
+    'To what extent do you agree with the statement C?'
+    );
+"""
+execute_query(connection, fill_question_3)
 create_form_table = """
 CREATE TABLE IF NOT EXISTS forms (
 id_form INTEGER PRIMARY KEY AUTOINCREMENT,
