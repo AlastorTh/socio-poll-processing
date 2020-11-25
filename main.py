@@ -136,39 +136,39 @@ for each in data['people']:
 
 # =========================================================================== #
 
-table_participants = PrettyTable()
+table = PrettyTable()
 
-table_participants.field_names = ["ID", "Name", "Age",
-                                  "Sex", "Education", "Marital status"]
+table.field_names = ["ID", "Name", "Age",
+                     "Sex", "Education", "Marital status"]
 
 query = """SELECT * FROM participants"""
-t_p = execute_read_query(connection, query)
+t = execute_read_query(connection, query)
 
-for i in range(len(t_p)):
-    table_participants.add_row(
-        [t_p[i][0], t_p[i][1], t_p[i][2], t_p[i][3], t_p[i][4], t_p[i][5]])
+for i in range(len(t)):
+    table.add_row(
+        [t[i][0], t[i][1], t[i][2], t[i][3], t[i][4], t[i][5]])
 
-print(table_participants)
+print(table)
 
 # =========================================================================== #
 
-table_questions = PrettyTable()
+table = PrettyTable()
 
-table_questions.field_names = ["ID", "Question"]
+table.field_names = ["ID", "Question"]
 
 query = """SELECT * FROM questions"""
-t_q = execute_read_query(connection, query)
+t = execute_read_query(connection, query)
 
-for i in range(len(t_q)):
-    table_questions.add_row([t_q[i][0], t_q[i][1]])
+for i in range(len(t)):
+    table.add_row([t[i][0], t[i][1]])
 
-print(table_questions)
+print(table)
 
 # =========================================================================== #
 
-table_forms = PrettyTable()
+table = PrettyTable()
 
-table_forms.field_names = [
+table.field_names = [
     "ID", "Name of the person ", "Question", "Answer"]
 
 query = """
@@ -177,9 +177,9 @@ FROM 'forms' f
 INNER JOIN 'participants' p ON p.id_pers     = f.id_pers
 INNER JOIN 'questions'    q ON q.id_question = f.id_question """
 
-t_f = execute_read_query(connection, query)
+t = execute_read_query(connection, query)
 
-for i in range(len(t_f)):
-    table_forms.add_row([t_f[i][0], t_f[i][1], t_f[i][2], t_f[i][3]])
+for i in range(len(t)):
+    table.add_row([t[i][0], t[i][1], t[i][2], t[i][3]])
 
-print(table_forms)
+print(table)
