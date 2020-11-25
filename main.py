@@ -91,32 +91,16 @@ CREATE TABLE IF NOT EXISTS questions (
 """
 execute_query(connection, create_questions_table)
 
-fill_question_1 = """
-INSERT INTO
+for p in data['questions']:
+    fill_questions = f"""
+    INSERT INTO
     questions (question)
 VALUES
-    ('To what extent do you agree with the statement A?'
+    ("{p['question']}"
     );
-"""
-execute_query(connection, fill_question_1)
-fill_question_2 = """
-INSERT INTO
-    questions (question)
-VALUES
-    (
-    'To what extent do you agree with the statement B?'
-    );
-"""
-execute_query(connection, fill_question_2)
-fill_question_3 = """
-INSERT INTO
-    questions (question)
-VALUES
-    (
-    'To what extent do you agree with the statement C?'
-    );
-"""
-execute_query(connection, fill_question_3)
+    """
+    execute_query(connection, fill_questions)
+
 create_form_table = """
 CREATE TABLE IF NOT EXISTS forms (
 id_form INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,14 +113,30 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 """
 execute_query(connection, create_form_table)
 
-fill_form_table = f"""
-INSERT INTO
-    forms (id_pers, id_question,answer)
-VALUES
-    (5);
-"""
 
-execute_query(connection, fill_form_table)
+def fill_forms_row(i, j, ans):
+    insert_form_row = f"""
+
+        INSERT INTO
+        forms (id_pers, id_question, answer)
+    VALUES
+        (
+            ({j}),
+            ({i}),
+            ({ans})
+        );
+
+    """
+    execute_query(connection, insert_form_row)
+
+
+j = 1
+for each in data['people']:
+    i = 1
+    for ans in each['answers']:
+        fill_forms_row(i, j, ans)
+        i += 1
+    j += 1
 
 # command = input()
 # if command == "by hand":
@@ -149,12 +149,3 @@ execute_query(connection, fill_form_table)
 
 select_participants = "SELECT * from participants"
 participants = execute_read_query(connection, select_participants)
-
-for participant in participants:
-    print(participant)
-print("---------------")
-select_questions = "SELECT * from questions"
-questions = execute_read_query(connection, select_questions)
-for question in questions:
-    print(question)
-print("---------------")
