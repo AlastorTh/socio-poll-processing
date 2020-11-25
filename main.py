@@ -169,7 +169,7 @@ print(table_questions)
 table_forms = PrettyTable()
 
 table_forms.field_names = [
-    "ID", "The ID of the person ", "The ID of the question", "Answer"]
+    "ID", "Name of the person ", "Question", "Answer"]
 
 query = """
 SELECT f.id_form, p.name, q.question, f.answer
@@ -180,6 +180,6 @@ INNER JOIN 'questions'    q ON q.id_question = f.id_question """
 t_f = execute_read_query(connection, query)
 
 for i in range(len(t_f)):
-    table_forms.add_row([t_f[i][0], t_f[i][1], t_f[i][1], t_f[i][3]])
+    table_forms.add_row([t_f[i][0], t_f[i][1], t_f[i][2], t_f[i][3]])
 
 print(table_forms)
