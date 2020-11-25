@@ -50,10 +50,6 @@ def parse_input(filepath):
     return lines
 
 
-# lines = parse_input("input.txt")
-
-# print(lines)
-
 with open("input.txt", encoding="UTF-8") as json_file:
     data = json.load(json_file)
     print(data)
@@ -71,7 +67,6 @@ CREATE TABLE IF NOT EXISTS participants (
 
 execute_query(connection, create_participants_table)
 connection.commit()
-# TODO: find a way to add variables to the insert queries
 
 for p in data['people']:
     fill_participants = f"""
@@ -138,14 +133,3 @@ for each in data['people']:
         i += 1
     j += 1
 
-# command = input()
-# if command == "by hand":
-#     pass  # TODO: input off keyboard
-# elif command == "file":
-#     pass  # TODO: input from file
-# else:
-#     pass  # TODO: error message
-
-
-select_participants = "SELECT * from participants"
-participants = execute_read_query(connection, select_participants)
