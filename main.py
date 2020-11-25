@@ -139,7 +139,7 @@ for each in data['people']:
 table_participants = PrettyTable()
 
 table_participants.field_names = ["ID", "Name", "Age",
-                                  "Gender", "Education", "Marital status"]
+                                  "Sex", "Education", "Marital status"]
 
 query = """SELECT * FROM participants"""
 t_p = execute_read_query(connection, query)
