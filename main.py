@@ -69,16 +69,6 @@ CREATE TABLE IF NOT EXISTS participants (
 execute_query(connection, create_participants_table)
 connection.commit()
 
-for p in data['people']:
-    fill_participants = f"""
-        INSERT INTO
-        participants (name, age, sex, education, marital_status)
-        VALUES
-        ("{p['name']}", {p['age']}, "{p['sex']}", "{p['university']}", "{p['marital_status']}");"""
-    execute_query(connection, fill_participants)
-
-print("Would you like to enter values by hand or from a file?")
-
 create_questions_table = """
 CREATE TABLE IF NOT EXISTS questions (
     id_question INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,16 +76,6 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 """
 execute_query(connection, create_questions_table)
-
-for p in data['questions']:
-    fill_questions = f"""
-    INSERT INTO
-    questions (question)
-VALUES
-    ("{p['question']}"
-    );
-    """
-    execute_query(connection, fill_questions)
 
 create_form_table = """
 CREATE TABLE IF NOT EXISTS forms (
@@ -108,78 +88,167 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 );
 """
 execute_query(connection, create_form_table)
+while True: 
+    action = int(input("If you want to :\n clear all tables - press 1\n add new data to a table  - press 2\n see a table - press 3\n to exit - press 4\n" ))
+    if action == 1:
+        while True:
+            table_to_clear = int(input("If you want to clear all tables - press 1\n to skip - press 4\n" ))
+            if table_to_clear == 1:
+                clear_participants_table = """
+                DROP TABLE IF EXISTS participants
+                ;
+                """
+                execute_query(connection, clear_participants_table)
+                execute_query(connection, create_participants_table)
+
+                clear_questions_table = """
+                DROP TABLE IF EXISTS questions
+                ;
+                """
+                execute_query(connection, clear_questions_table)
+                execute_query(connection, create_questions_table)
+
+                clear_forms_table = """
+                DROP TABLE IF EXISTS forms
+                ;
+                """
+                execute_query(connection, clear_forms_table)
+                execute_query(connection, create_form_table)
+
+            
+
+            elif table_to_clear == 4:
+                print("\n")
+                break
+
+            else :
+                print("Invalid input, try again")
 
 
-def fill_forms_row(i, j, ans):
-    insert_form_row = f"""
+    if action == 2:
+        while True:
+            table_to_fill = int(input("If you want to add new data to:\n participants table - press 1\n questions table - press 2\n forms table - press 3\n to exit - press 4\n" ))
 
-        INSERT INTO
-        forms (id_pers, id_question, answer)
-    VALUES
-        (
-            ({j}),
-            ({i}),
-            ({ans})
-        );
-
-    """
-    execute_query(connection, insert_form_row)
+            if table_to_fill == 1:    
+                for p in data['people']:
+                    fill_participants = f"""
+                        INSERT INTO
+                        participants (name, age, sex, education, marital_status)
+                        VALUES
+                        ("{p['name']}", {p['age']}, "{p['sex']}", "{p['university']}", "{p['marital_status']}");"""
+                    execute_query(connection, fill_participants)   
 
 
-j = 1
-for each in data['people']:
-    i = 1
-    for ans in each['answers']:
-        fill_forms_row(i, j, ans)
-        i += 1
-    j += 1
 
-# =========================================================================== #
+            elif table_to_fill == 2:
+                for p in data['questions']:
+                    fill_questions = f"""
+                    INSERT INTO
+                    questions (question)
+                VALUES
+                    ("{p['question']}"
+                    );
+                    """
+                    execute_query(connection, fill_questions)
 
-table = PrettyTable()
 
-table.field_names = ["ID", "Name", "Age",
-                     "Sex", "Education", "Marital status"]
+            elif table_to_fill == 3:
+                def fill_forms_row(i, j, ans):
+                    insert_form_row = f"""
 
-query = """SELECT * FROM participants"""
-t = execute_read_query(connection, query)
+                        INSERT INTO
+                        forms (id_pers, id_question, answer)
+                    VALUES
+                        (
+                            ({j}),
+                            ({i}),
+                            ({ans})
+                        );
 
-for i in range(len(t)):
-    table.add_row(
-        [t[i][0], t[i][1], t[i][2], t[i][3], t[i][4], t[i][5]])
+                    """
+                    execute_query(connection, insert_form_row)
 
-print(table)
 
-# =========================================================================== #
+                j = 1
+                for each in data['people']:
+                    i = 1
+                    for ans in each['answers']:
+                        fill_forms_row(i, j, ans)
+                        i += 1
+                    j += 1
+            elif table_to_fill == 4:
+                print("\n")
+                break
 
-table = PrettyTable()
+            else :
+                print("Invalid input, try again")
 
-table.field_names = ["ID", "Question"]
+    if action == 3:
+        while True:
+            table_to_show = int(input("If you want to see:\n participants table - press 1\n questions table - press 2\n forms table - press 3\n to exit - press 4\n" ))
 
-query = """SELECT * FROM questions"""
-t = execute_read_query(connection, query)
+            if table_to_show == 1:
 
-for i in range(len(t)):
-    table.add_row([t[i][0], t[i][1]])
+                table = PrettyTable()
 
-print(table)
+                table.field_names = ["ID", "Name", "Age",
+                                    "Sex", "Education", "Marital status"]
 
-# =========================================================================== #
+                query = """SELECT * FROM participants"""
+                t = execute_read_query(connection, query)
 
-table = PrettyTable()
+                for i in range(len(t)):
+                    table.add_row(
+                        [t[i][0], t[i][1], t[i][2], t[i][3], t[i][4], t[i][5]])
 
-table.field_names = [
-    "ID", "Name of the person ", "Question", "Answer"]
+                print(table)
 
-query = """
-SELECT f.id_form, p.name, q.question, f.answer
-FROM 'forms' f
-INNER JOIN 'participants' p ON p.id_pers     = f.id_pers
-INNER JOIN 'questions'    q ON q.id_question = f.id_question """
+        
+            elif table_to_show == 2:
 
-t = execute_read_query(connection, query)
+                table = PrettyTable()
 
-for i in range(len(t)):
-    table.add_row([t[i][0], t[i][1], t[i][2], t[i][3]])
+                table.field_names = ["ID", "Question"]
 
-print(table)
+                query = """SELECT * FROM questions"""
+                t = execute_read_query(connection, query)
+
+                for i in range(len(t)):
+                    table.add_row([t[i][0], t[i][1]])
+
+                print(table)
+
+            
+            elif table_to_show == 3:
+
+                table = PrettyTable()
+
+                table.field_names = [
+                    "ID", "Name of the person ", "Question", "Answer"]
+
+                query = """
+                SELECT f.id_form, p.name, q.question, f.answer
+                FROM 'forms' f
+                INNER JOIN 'participants' p ON p.id_pers     = f.id_pers
+                INNER JOIN 'questions'    q ON q.id_question = f.id_question """
+
+                t = execute_read_query(connection, query)
+
+                for i in range(len(t)):
+                    table.add_row([t[i][0], t[i][1], t[i][2], t[i][3]])
+
+                print(table)
+
+            elif table_to_show == 4:
+                print("\n")
+                break
+
+            else :
+                print("Invalid input, try again")
+
+    elif action == 4:
+        print("\n")
+        break
+
+    else :
+        print("Invalid input, try again")
