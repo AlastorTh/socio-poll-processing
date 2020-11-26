@@ -1,3 +1,4 @@
+from prettytable import PrettyTable
 import sqlite3
 from sqlite3 import Error
 import json
@@ -133,3 +134,52 @@ for each in data['people']:
         i += 1
     j += 1
 
+# =========================================================================== #
+
+table = PrettyTable()
+
+table.field_names = ["ID", "Name", "Age",
+                     "Sex", "Education", "Marital status"]
+
+query = """SELECT * FROM participants"""
+t = execute_read_query(connection, query)
+
+for i in range(len(t)):
+    table.add_row(
+        [t[i][0], t[i][1], t[i][2], t[i][3], t[i][4], t[i][5]])
+
+print(table)
+
+# =========================================================================== #
+
+table = PrettyTable()
+
+table.field_names = ["ID", "Question"]
+
+query = """SELECT * FROM questions"""
+t = execute_read_query(connection, query)
+
+for i in range(len(t)):
+    table.add_row([t[i][0], t[i][1]])
+
+print(table)
+
+# =========================================================================== #
+
+table = PrettyTable()
+
+table.field_names = [
+    "ID", "Name of the person ", "Question", "Answer"]
+
+query = """
+SELECT f.id_form, p.name, q.question, f.answer
+FROM 'forms' f
+INNER JOIN 'participants' p ON p.id_pers     = f.id_pers
+INNER JOIN 'questions'    q ON q.id_question = f.id_question """
+
+t = execute_read_query(connection, query)
+
+for i in range(len(t)):
+    table.add_row([t[i][0], t[i][1], t[i][2], t[i][3]])
+
+print(table)
