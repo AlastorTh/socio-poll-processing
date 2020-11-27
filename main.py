@@ -88,11 +88,12 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 );
 """
 execute_query(connection, create_form_table)
-while True: 
-    action = int(input("If you want to :\n clear all tables - press 1\n add new data to a table  - press 2\n see a table - press 3\n to exit - press 4\n" ))
+while True:
+    action = int(input(
+        "If you want to :\n clear all tables - press 1\n add new data to a table  - press 2\n see a table - press 3\n to exit - press 4\n"))
     if action == 1:
         while True:
-            table_to_clear = int(input("If you want to clear all tables - press 1\n to skip - press 4\n" ))
+            table_to_clear = int(input("If you want to clear all tables - press 1\n to skip - press 4\n"))
             if table_to_clear == 1:
                 clear_participants_table = """
                 DROP TABLE IF EXISTS participants
@@ -115,28 +116,26 @@ while True:
                 execute_query(connection, clear_forms_table)
                 execute_query(connection, create_form_table)
 
-            
-
             elif table_to_clear == 4:
                 print("\n")
                 break
 
-            else :
+            else:
                 print("Invalid input, try again")
 
-
-    if action == 2:
+    elif action == 2:
         while True:
-            table_to_fill = int(input("If you want to add new data to:\n participants table - press 1\n questions table - press 2\n forms table - press 3\n to exit - press 4\n" ))
+            table_to_fill = int(input(
+                "If you want to add new data to:\n participants table - press 1\n questions table - press 2\n forms table - press 3\n to exit - press 4\n"))
 
-            if table_to_fill == 1:    
+            if table_to_fill == 1:
                 for p in data['people']:
                     fill_participants = f"""
                         INSERT INTO
                         participants (name, age, sex, education, marital_status)
                         VALUES
                         ("{p['name']}", {p['age']}, "{p['sex']}", "{p['university']}", "{p['marital_status']}");"""
-                    execute_query(connection, fill_participants)   
+                    execute_query(connection, fill_participants)
 
 
 
@@ -179,20 +178,20 @@ while True:
             elif table_to_fill == 4:
                 print("\n")
                 break
-
-            else :
+            else:
                 print("Invalid input, try again")
 
-    if action == 3:
+    elif action == 3:
         while True:
-            table_to_show = int(input("If you want to see:\n participants table - press 1\n questions table - press 2\n forms table - press 3\n to exit - press 4\n" ))
+            table_to_show = int(input(
+                "If you want to see:\n participants table - press 1\n questions table - press 2\n forms table - press 3\n to exit - press 4\n"))
 
             if table_to_show == 1:
 
                 table = PrettyTable()
 
                 table.field_names = ["ID", "Name", "Age",
-                                    "Sex", "Education", "Marital status"]
+                                     "Sex", "Education", "Marital status"]
 
                 query = """SELECT * FROM participants"""
                 t = execute_read_query(connection, query)
@@ -203,7 +202,7 @@ while True:
 
                 print(table)
 
-        
+
             elif table_to_show == 2:
 
                 table = PrettyTable()
@@ -218,7 +217,7 @@ while True:
 
                 print(table)
 
-            
+
             elif table_to_show == 3:
 
                 table = PrettyTable()
@@ -243,12 +242,12 @@ while True:
                 print("\n")
                 break
 
-            else :
+            else:
                 print("Invalid input, try again")
 
     elif action == 4:
         print("\n")
         break
 
-    else :
+    else:
         print("Invalid input, try again")
