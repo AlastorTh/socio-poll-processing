@@ -90,10 +90,10 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 execute_query(connection, create_form_table)
 while True:
     action = int(input(
-        "1 to clear all tables\n2 to  add new data to a table\n3 to view a table \n4 to exit"))
+        "1 to clear all tables\n2 to  add new data to a table\n3 to view a table \n4 to exit\n"))
     if action == 1:
         while True:
-            table_to_clear = int(input("1 to clear all tables\n4 to go back to the main page"))
+            table_to_clear = int(input("1 to clear all tables\n4 to go back to the main page\n"))
             if table_to_clear == 1:
                 clear_participants_table = """
                 DROP TABLE IF EXISTS participants
@@ -115,6 +115,7 @@ while True:
                 """
                 execute_query(connection, clear_forms_table)
                 execute_query(connection, create_form_table)
+                break
 
             elif table_to_clear == 4:
                 print("\n")
@@ -126,7 +127,7 @@ while True:
     elif action == 2:
         while True:
             table_to_fill = int(input(
-                "Fill the tables:\n 1 - participants\n2 - questions\n3 - forms\n4 to go back to menu"))
+                "Fill the tables:\n 1 - participants\n2 - questions\n3 - forms\n4 to go back to menu\n"))
 
             if table_to_fill == 1:
                 for p in data['people']:
@@ -184,7 +185,7 @@ while True:
     elif action == 3:
         while True:
             table_to_show = int(input(
-                "Table view:\n1 - participants\n2 - questions\n3 - forms\n4 - go back to the menu"))
+                "Table view:\n1 - participants\n2 - questions\n3 - forms\n4 - go back to the menu\n"))
 
             if table_to_show == 1:
 
