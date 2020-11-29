@@ -40,7 +40,7 @@ def create_connection(path):
 
 connection = create_connection("D:\\sm_app.sqlite")
 
-with open("input.txt", encoding="UTF-8") as json_file:
+with open("input.json", encoding="UTF-8") as json_file:
     data = json.load(json_file)
 print("Welcome to the astounding social poll analyzer v. 1.0(patent pending)")
 create_participants_table = """
@@ -108,10 +108,11 @@ def percentage_distribution(q_num):
 
 while True:
     action = int(input(
-        "1 to clear all tables\n2 to  add new data to a table\n3 to view a table \n4 to view percentage distribution\n5 to exit\n"))
+        "1 to clear all tables\n2 to add new data to a table\n3 to view a table \n4 to view percentage distribution\n5 to exit\n"))
     if action == 1:
         while True:
-            table_to_clear = int(input("1 to clear all tables\n4 to go back to the main page\n"))
+            table_to_clear = int(
+                input("1 to clear all tables\n4 to go back to the main page\n"))
             if table_to_clear == 1:
                 clear_participants_table = """
                 DROP TABLE IF EXISTS participants
@@ -144,7 +145,7 @@ while True:
     elif action == 2:
         while True:
             table_to_fill = int(input(
-                "Fill the tables:\n 1 - participants\n2 - questions\n3 - forms\n4 to go back to menu\n"))
+                "Fill the tables:\n1 - participants\n2 - questions\n3 - forms\n4 to go back to menu\n"))
 
             if table_to_fill == 1:
                 for p in data['people']:
@@ -154,8 +155,6 @@ while True:
                         VALUES
                         ("{p['name']}", {p['age']}, "{p['sex']}", "{p['university']}", "{p['marital_status']}");"""
                     execute_query(connection, fill_participants)
-
-
 
             elif table_to_fill == 2:
                 for p in data['questions']:
@@ -167,7 +166,6 @@ while True:
                     );
                     """
                     execute_query(connection, fill_questions)
-
 
             elif table_to_fill == 3:
                 def fill_forms_row(i, j, ans):
@@ -184,7 +182,6 @@ while True:
 
                     """
                     execute_query(connection, insert_form_row)
-
 
                 j = 1
                 for each in data['people']:
@@ -220,7 +217,6 @@ while True:
 
                 print(table)
 
-
             elif table_to_show == 2:
 
                 table = PrettyTable()
@@ -234,7 +230,6 @@ while True:
                     table.add_row([t[i][0], t[i][1]])
 
                 print(table)
-
 
             elif table_to_show == 3:
 
@@ -263,11 +258,12 @@ while True:
             else:
                 print("Invalid input, try again")
     elif action == 4:
-        q_num = int(input("Input the question num to get the corresponding percentage distribution:"))
+        q_num = int(input(
+            "Input the question num to get the corresponding percentage distribution:"))
         res = percentage_distribution(q_num)
         print("Answer distribution is:")
         for i in res:
-            print(f" {i * 100}%")
+            print(" {:.2f}%".format(i * 100))
     elif action == 5:
         print("\n")
         break
