@@ -9,7 +9,7 @@ def execute_query(connection, query):
     try:
         cursor.execute(query)
         connection.commit()
-        print("Query executed successfully")
+        # print("Query executed successfully")
     except Error as e:
         print(f"The error '{e}' occurred")
 
@@ -31,7 +31,7 @@ def create_connection(path):
         connection = sqlite3.connect(path)
         connection.execute("PRAGMA foreign_keys = 1")
         connection.commit()
-        print("Connection to SQLite DB successful")
+        # print("Connection to SQLite DB successful")
     except Error as e:
         print(f"The error '{e}' occurred")
 
@@ -40,21 +40,9 @@ def create_connection(path):
 
 connection = create_connection("D:\\sm_app.sqlite")
 
-
-def parse_input(filepath):
-    file = open(filepath, "r")
-    lines = file.readlines()
-    file.close()
-    for line in lines:
-        line = line.strip()
-        line = line.split(", ")
-    return lines
-
-
 with open("input.txt", encoding="UTF-8") as json_file:
     data = json.load(json_file)
-    print(data)
-# TODO: make a UI, asking for confirmation on every step
+print("Welcome to the astounding social poll analyzer v. 1.0(patent pending)")
 create_participants_table = """
 CREATE TABLE IF NOT EXISTS participants (
   id_pers INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,16 +76,45 @@ FOREIGN KEY(id_question) REFERENCES questions(id_question)
 );
 """
 execute_query(connection, create_form_table)
+
+
+def ans_overall(q_num):
+    ans_overall_read = f"""
+    SELECT COUNT(*)  FROM forms 
+    WHERE forms.id_question = {q_num}
+    """
+    res = execute_read_query(connection, ans_overall_read)
+    return res[0][0]
+
+
+def ans_specific(q_num, read_ans):
+    ans_spec_read = f"""
+    SELECT COUNT(*) FROM forms
+    WHERE forms.id_question = {q_num}
+    AND forms.answer = {read_ans}
+"""
+    res = execute_read_query(connection, ans_spec_read)
+    return res[0][0]
+
+
+def percentage_distribution(q_num):
+    distr = []
+    overall_ans = ans_overall(q_num)
+    for cnt in range(1, 6):
+        ans_n = ans_specific(q_num, cnt)
+        distr.append(ans_n / overall_ans)
+    return distr
+
+
 while True:
     action = int(input(
-        "1 to clear all tables\n2 to  add new data to a table\n3 to view a table \n4 to exit\n"))
+        "1 to clear all tables\n2 to  add new data to a table\n3 to view a table \n4 to view percentage distribution\n5 to exit\n"))
     if action == 1:
         while True:
             table_to_clear = int(input("1 to clear all tables\n4 to go back to the main page\n"))
             if table_to_clear == 1:
                 clear_participants_table = """
                 DROP TABLE IF EXISTS participants
-                ;
                 """
                 execute_query(connection, clear_participants_table)
                 execute_query(connection, create_participants_table)
@@ -245,8 +262,13 @@ while True:
 
             else:
                 print("Invalid input, try again")
-
     elif action == 4:
+        q_num = int(input("Input the question num to get the corresponding percentage distribution:"))
+        res = percentage_distribution(q_num)
+        print("Answer distribution is:")
+        for i in res:
+            print(f" {i * 100}%")
+    elif action == 5:
         print("\n")
         break
 
